@@ -9,7 +9,7 @@
           <v-row class="produtosEstrutura d-flex flex-column">
             <div
               class="produtos d-flex align-center"
-              v-for="(camiseta, index) of camisetasCarrinho"
+              v-for="(camiseta, index) of carrinho.camisetas"
               :key="index"
             >
               <div class="imgProduto">
@@ -25,7 +25,7 @@
                 Preço: R$ {{ camiseta.preço }},00
               </div>
               <div class="btnAdicionarDiminuir">
-                <v-btn small @click.stop.prevent="adicionarDiminuirQuantidade({tipo: 'adicionar', id: camiseta.id})"><v-icon>mdi-plus</v-icon></v-btn>
+                <v-btn small @click.stop.prevent="addShirt(camiseta.id)"><v-icon>mdi-plus</v-icon></v-btn>
                 <v-btn small @click.stop.prevent="adicionarDiminuirQuantidade({tipo: 'diminuir', id: camiseta.id})"><v-icon>mdi-minus</v-icon></v-btn>
               </div>
             </div>
@@ -40,7 +40,7 @@
           <v-row class="resumoContent d-flex flex-column" id="total">
             <v-container class="d-flex total justify-space-between">
               <span>Total:</span>
-              <span>R$ {{ preçoTotal }},00</span>
+              <span>R$ {{ carrinho.valorTotal }},00</span>
             </v-container>
           </v-row>
           <v-row class="btnResumo">
@@ -49,6 +49,7 @@
               <v-icon right>mdi-check-bold</v-icon>
             </v-btn>
           </v-row>
+          {{ carrinho}}
         </v-container>
       </v-col>
     </v-row>
@@ -56,14 +57,15 @@
 </template>
 
 <script>
-import { mapState } from 'vuex';
+import { mapState, mapActions } from 'vuex';
 
 export default {
 
   computed: {
-    ...mapState({
-      camisetasCarrinho: state => state.camisetasCarrinho
-    }),
+    // ...mapState({
+    //   camisetasCarrinho: state => state.camisetasCarrinho
+    // }),
+    ...mapState(['carrinho']),
     preçoTotal() {
       var preço = 0;
       this.camisetasCarrinho.forEach(camiseta => {
@@ -75,8 +77,14 @@ export default {
 
 
   methods: {
+    ...mapActions(['addCart']),
+    addShirt(id) {
+      this.addCart(id)
+      this.$forceUpdate()
+    },
     adicionarDiminuirQuantidade(props) {
       this.$store.dispatch('adicionarDiminuirQuantidade', props)
+      this.$forceUpdate()
     },
   }
 

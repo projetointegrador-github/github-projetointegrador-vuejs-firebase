@@ -9,7 +9,11 @@ export default new Vuex.Store({
   state: {
     camisetas: [],
     camisetasFiltradas: [],
-    camisetasCarrinho: [],
+    carrinho: {
+      valorTotal: 0.00,
+      camisetas: [
+      ],
+    },
     visitCount: 0
   },
   mutations: {
@@ -28,14 +32,17 @@ export default new Vuex.Store({
       state.camisetasFiltradas = state.camisetas;
     },
     ADD_CART(state, id) {
-      const produtoExiste = state.camisetasCarrinho.find(camiseta => camiseta.id === id);
+      const dadosCamiseta = state.camisetasFiltradas.find(camiseta => camiseta.id === id);
+      const produtoExiste = state.carrinho.camisetas.find(camiseta => camiseta.id === id);
       if (produtoExiste) {
         produtoExiste.quantidade += 1;
       } else {
-        const camiseta = state.camisetasFiltradas.find(camiseta => camiseta.id === id);
-        camiseta.quantidade = 1;
-        state.camisetasCarrinho.push(camiseta);
+        let novaCamiseta = {}
+        Object.assign(novaCamiseta, dadosCamiseta)
+        novaCamiseta.quantidade = 1;
+        state.carrinho.camisetas.push(novaCamiseta);
       }
+      state.carrinho.valorTotal += dadosCamiseta.preço 
     },
     ADICIONAR_DIMINUIR_QUANTIDADE(state, props) {
       const camiseta = state.camisetasCarrinho.find(camiseta => camiseta.id === props.id);
@@ -44,7 +51,7 @@ export default new Vuex.Store({
       } else {
         camiseta.quantidade -= 1;
       }
-      console.log(camiseta.quantidade);
+      console.log(state.camisetasCarrinho);
     }
   },
   actions: {
@@ -61,8 +68,9 @@ export default new Vuex.Store({
         context.commit('FILTRAR_CAMISETAS', filtro)
       }
     },
-    addCart(context, id) {
-      context.commit('ADD_CART', id);
+    addCart({commit}, id) {
+      /// chamada para a firebase...
+      commit('ADD_CART', id);
     },
     adicionarDiminuirQuantidade(context, props) {
       context.commit('ADICIONAR_DIMINUIR_QUANTIDADE', props);

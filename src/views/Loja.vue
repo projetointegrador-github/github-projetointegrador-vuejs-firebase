@@ -8,7 +8,7 @@
     >
       <v-img class="white--text align-end" height="200px">
         <img
-          src="https://static.vecteezy.com/ti/vetor-gratis/t2/3137104-modelo-camisa-vermelha-preta-para-uniforme-time-e-camiseta-de-futebol-vetor.jpg"
+          src="../assets/camiseta3.png"
           alt="Dale"
         />
       </v-img>
@@ -21,7 +21,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="green" @click.stop.prevent="addCart(camiseta.id)" dark @click.prevent.stop="callDialogAdicionado">
+        <v-btn color="green" @click.stop.prevent="addToCart(camiseta.id)" dark>
           COMPRAR
           <v-icon right>mdi-cart-plus</v-icon>
         </v-btn>
@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
 
@@ -91,8 +91,10 @@ export default {
 
 
   methods: {
-    addCart(id) {
-      this.$store.dispatch('addCart', id)
+    ...mapActions(['addCart']),
+    addToCart(id) {
+      this.addCart(id)
+      this.callDialogAdicionado()
     },
     callDialogAdicionado() {
       this.dialogAdicionado = true;
