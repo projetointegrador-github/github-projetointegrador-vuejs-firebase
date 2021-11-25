@@ -1,0 +1,185 @@
+@import url("https://fonts.googleapis.com/css2?family=Cherish&family=Parisienne&display=swap");
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Roboto";
+}
+#alertAdicionadores {
+  position: absolute;
+  bottom: 30px;
+}
+.routerLogo {
+  width: 100%;
+  height: 100%;
+}
+.btnAdicionarDiminuir {
+  margin: 0 20px 0 auto;
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 10px;
+}
+.h1 {
+  font-size: 2em;
+  margin: 0 0 30px 0;
+  text-align: center;
+}
+.card-perfil {
+  max-width: 500px;
+}
+.estruturaCamisetas {
+  gap: 30px;
+}
+.form-perfil {
+  padding: 5px 30px;
+}
+.estrutura-perfil {
+  max-width: 860px;
+  padding: 30px;
+  margin: 0 auto;
+}
+
+.logoLojaLogin {
+  position: absolute;
+  margin: 0 25px;
+  left: 50%;
+  transform: translateX(-60%);
+}
+
+.navigationHeader {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-bottom: -5px;
+}
+.accountDiv {
+  gap: 5px;
+}
+.accountDiv i {
+  font-size: 5em;
+}
+.accountDiv i + i {
+  margin-left: 18px;
+}
+#titleSidebar {
+  font-family: "Parisienne", Helvetica, sans-serif;
+  font-size: 1.7em;
+}
+#logo {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+.form-login {
+  position: relative;
+  margin-top: 30px;
+  width: 550px;
+}
+.h1 {
+  text-align: center;
+}
+.card-login {
+  padding: 30px 50px;
+  max-width: 750px;
+  overflow-y: scroll;
+}
+.estrutura-login {
+  background-image: url("../assets/background.jpg");
+  background-size: cover;
+  padding: 50px;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+}
+.tituloCarrinho2 {
+  height: 100px;
+  color: blacky;
+  border-radius: 5px;
+  padding: 0 20px;
+}
+#carrinhoMain {
+  max-width: 1000px;
+  margin: 0 auto;
+}
+.rowCarrinho {
+  gap: 30px;
+}
+#total {
+  margin: 0;
+  padding: 0;
+}
+.produtosEstrutura {
+  gap: 15px;
+}
+.produtos {
+  gap: 15px;
+  box-shadow: rgba(0, 0, 0, 0.1) 0px 0px 5px 0px,
+    rgba(0, 0, 0, 0.1) 0px 0px 1px 0px;
+  height: 100px;
+}
+.produtosEstrutura {
+  padding: 15px;
+}
+.btnResumo {
+  padding: 0 20px 10px 10px;
+}
+.btnComprar {
+}
+.imgProduto,
+.imgCamisetaProduto {
+  height: 100%;
+}
+.total {
+  margin: 0;
+  padding: 0;
+}
+.colCarrinho2,
+.colCarrinho1 {
+  border-radius: 5px;
+  border: 1px solid black;
+}
+#estruturaCarrinho2 {
+  margin-left: 30px;
+  max-width: 300px;
+}
+.resumoContent {
+  padding: 10px 20px;
+}
+#estruturaCarrinho1,
+#estruturaCarrinho2 {
+  padding: 0;
+  margin: 0;
+}
+#estruturaCarrinho1 .tituloCarrinho {
+  color: black;
+  background: rgb(241, 241, 241);
+  height: 100px;
+  padding: 0 20px;
+  border-radius: 5px;
+}
+
+/* Footer */
+
+/* #btn2sobre {
+
+} */
+
+#card-sobre {
+  padding: 30px 60px;
+}
+#sobre-title {
+  font-size: 2em;
+}
+#sobre-text {
+}
+ul {
+  list-style: none;
+  margin: 0;
+}
+#lista-estudantes {
+  padding: 0;
+}
