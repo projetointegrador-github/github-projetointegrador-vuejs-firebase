@@ -11,8 +11,7 @@ export default new Vuex.Store({
     camisetasFiltradas: [],
     carrinho: {
       valorTotal: 0.00,
-      camisetas: [
-      ],
+      camisetas: [],
     },
     visitCount: 0
   },
@@ -37,21 +36,20 @@ export default new Vuex.Store({
       if (produtoExiste) {
         produtoExiste.quantidade += 1;
       } else {
-        let novaCamiseta = {}
-        Object.assign(novaCamiseta, dadosCamiseta)
+        let novaCamiseta = {};
+        Object.assign(novaCamiseta, dadosCamiseta);
         novaCamiseta.quantidade = 1;
         state.carrinho.camisetas.push(novaCamiseta);
       }
-      state.carrinho.valorTotal += dadosCamiseta.preço 
+      state.carrinho.valorTotal += dadosCamiseta.preço ;
     },
-    ADICIONAR_DIMINUIR_QUANTIDADE(state, props) {
-      const camiseta = state.camisetasCarrinho.find(camiseta => camiseta.id === props.id);
-      if (props.tipo === 'adicionar') {
-        camiseta.quantidade += 1;
-      } else {
+    DIMINUIR_QUANTIDADE(state, id) {
+      const camiseta = state.carrinho.camisetas.find(camiseta => camiseta.id === id);
+      if (camiseta.quantidade > 1) {
         camiseta.quantidade -= 1;
+        state.carrinho.valorTotal -= camiseta.preço;
+        console.log(camiseta.quantidade);
       }
-      console.log(state.camisetasCarrinho);
     }
   },
   actions: {
@@ -72,8 +70,8 @@ export default new Vuex.Store({
       /// chamada para a firebase...
       commit('ADD_CART', id);
     },
-    adicionarDiminuirQuantidade(context, props) {
-      context.commit('ADICIONAR_DIMINUIR_QUANTIDADE', props);
+    DiminuirQuantidade({commit}, id) {
+      commit('DIMINUIR_QUANTIDADE', id);
     }
   },
   modules: {

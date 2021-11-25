@@ -25,8 +25,16 @@
                 Preço: R$ {{ camiseta.preço }},00
               </div>
               <div class="btnAdicionarDiminuir">
-                <v-btn small @click.stop.prevent="addShirt(camiseta.id)"><v-icon>mdi-plus</v-icon></v-btn>
-                <v-btn small @click.stop.prevent="adicionarDiminuirQuantidade({tipo: 'diminuir', id: camiseta.id})"><v-icon>mdi-minus</v-icon></v-btn>
+                <v-btn small @click.stop.prevent="addShirt(camiseta.id)"
+                  ><v-icon>mdi-plus</v-icon></v-btn
+                >
+                <v-btn
+                  small
+                  @click.stop.prevent="
+                    DiminuirQuantidade(camiseta.id)
+                  "
+                  ><v-icon>mdi-minus</v-icon></v-btn
+                >
               </div>
             </div>
           </v-row>
@@ -49,7 +57,6 @@
               <v-icon right>mdi-check-bold</v-icon>
             </v-btn>
           </v-row>
-          {{ carrinho}}
         </v-container>
       </v-col>
     </v-row>
@@ -57,37 +64,27 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex';
+import { mapState, mapActions } from "vuex";
 
 export default {
-
   computed: {
     // ...mapState({
     //   camisetasCarrinho: state => state.camisetasCarrinho
     // }),
-    ...mapState(['carrinho']),
-    preçoTotal() {
-      var preço = 0;
-      this.camisetasCarrinho.forEach(camiseta => {
-        preço += camiseta.preço * camiseta.quantidade
-      })
-      return preço
-    }
+    ...mapState(["carrinho"]),
   },
 
-
   methods: {
-    ...mapActions(['addCart']),
+    ...mapActions(["addCart"]),
     addShirt(id) {
-      this.addCart(id)
-      this.$forceUpdate()
+      this.addCart(id);
+      this.$forceUpdate();
     },
-    adicionarDiminuirQuantidade(props) {
-      this.$store.dispatch('adicionarDiminuirQuantidade', props)
-      this.$forceUpdate()
+    DiminuirQuantidade(id) {
+      this.$store.dispatch("DiminuirQuantidade", id);
+      this.$forceUpdate();
     },
-  }
-
+  },
 };
 </script>
 

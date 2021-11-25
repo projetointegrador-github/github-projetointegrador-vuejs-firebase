@@ -9,7 +9,9 @@
       id="header"
     >
       <Tabs />
-      <v-img src="../assets/logoLoja.png" max-width="70px" id="logo"></v-img>
+      <v-btn id="logo" icon :to="{ name : 'Loja' }" light>
+        <v-img src="../assets/logoLoja.png" max-width="70px"></v-img>
+      </v-btn>
       <v-spacer></v-spacer>
       <div class="accountDiv d-flex align-center">
         <v-btn icon :to="{ name: 'Perfil' }"
