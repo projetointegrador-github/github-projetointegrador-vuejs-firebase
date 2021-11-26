@@ -53,10 +53,10 @@ export default new Vuex.Store({
     }
   },
   actions: {
-    async getCamisetas() {
+    async getCamisetas({commit}) {
       const docs = await getDocs(camisetasCollection);
       docs.forEach(doc => {
-        this.commit('PUSH_CAMISETAS', doc.data())
+        commit('PUSH_CAMISETAS', doc.data())
       })
     },
     filtrarCamisetas(context, filtro) {

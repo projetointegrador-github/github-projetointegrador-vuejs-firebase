@@ -30,9 +30,7 @@
                 >
                 <v-btn
                   small
-                  @click.stop.prevent="
-                    DiminuirQuantidade(camiseta.id)
-                  "
+                  @click.stop.prevent="DiminuirQuantidade(camiseta.id)"
                   ><v-icon>mdi-minus</v-icon></v-btn
                 >
               </div>
