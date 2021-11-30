@@ -20,7 +20,7 @@
         <v-btn icon :to="{ name: 'Carrinho' }"
           ><v-icon size="2.1em">mdi-cart-variant</v-icon></v-btn
         >
-        <v-btn icon><v-icon size="2.1em">mdi-logout</v-icon></v-btn>
+        <v-btn icon @click.stop.prevent="signOut()"><v-icon size="2.1em">mdi-logout</v-icon></v-btn>
       </div>
     </v-app-bar>
 
@@ -40,6 +40,8 @@
 
 <script>
 import Tabs from "../components/Tabs.vue";
+import { auth } from "../plugins/firebase.js";
+import { signOut } from "@firebase/auth";
 
 export default {
   data() {
@@ -51,5 +53,11 @@ export default {
   components: {
     Tabs,
   },
+
+  methods: {
+    signOut() {
+      signOut(auth);
+    }
+  }
 };
 </script>

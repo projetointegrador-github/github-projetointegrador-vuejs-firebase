@@ -66,18 +66,55 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog
+      v-model="dialogNoUser"
+      max-width="700"
+    >
+      <v-card>
+        <v-card-title class="text-h5">
+          VOCÊ AINDA NÃO TEM UM USUÁRIO CRIADO
+        </v-card-title>
+
+        <v-card-text>
+          Clique em CRIAR USUÁRIO para ir à página de criar usuários
+        </v-card-text>
+
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn
+            color="red darken-1"
+            text
+            @click="dialogNoUser = !dialogNoUser"
+          >
+            FECHAR
+          </v-btn>
+          <v-btn
+            dense
+            color="green darken-1"
+            text
+            @click="dialogAdicionado = !dialogNoUser"
+            :to="{ name: 'Login' }"
+          >
+            CRIAR USUÁRIO
+          </v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import { auth } from '../plugins/firebase.js';
 
 export default {
 
   data() {
     return {
       dialogAdicionado: false,
-      dialogCart: false
+      dialogCart: false,
+      dialogNoUser: false,
     }
   },
 
@@ -93,8 +130,13 @@ export default {
   methods: {
     ...mapActions(['addCart']),
     addToCart(id) {
-      this.addCart(id)
-      this.callDialogAdicionado()
+      const user = auth.currentUser;
+      if (user) {
+        this.addCart(id);
+        this.callDialogAdicionado();
+      } else {
+        this.dialogNoUser = true;
+      }
     },
     callDialogAdicionado() {
       this.dialogAdicionado = true;

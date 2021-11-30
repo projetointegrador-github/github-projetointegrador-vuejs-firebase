@@ -1,12 +1,15 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { camisetasCollection } from '../plugins/firebase.js';
+import { camisetasCollection, auth } from '../plugins/firebase.js';
 import { getDocs } from '@firebase/firestore';
 
 Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
+    user: {
+      UID: '',
+    },
     camisetas: [],
     camisetasFiltradas: [],
     carrinho: {
@@ -50,6 +53,9 @@ export default new Vuex.Store({
         state.carrinho.valorTotal -= camiseta.preço;
         console.log(camiseta.quantidade);
       }
+    },
+    SAVE_UID(state, uid) {
+      state.user.UID = uid;
     }
   },
   actions: {
@@ -72,6 +78,10 @@ export default new Vuex.Store({
     },
     DiminuirQuantidade({commit}, id) {
       commit('DIMINUIR_QUANTIDADE', id);
+    },
+    saveUID({commit}) {
+      const uid = auth.currentUser.uid;
+      commit('SAVE_UID', uid);
     }
   },
   modules: {

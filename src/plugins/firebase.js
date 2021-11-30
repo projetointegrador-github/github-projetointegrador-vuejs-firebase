@@ -1,5 +1,6 @@
 import { initializeApp } from '@firebase/app';
 import { getFirestore, collection } from '@firebase/firestore'
+import { getAuth } from '@firebase/auth';
 
 const app = initializeApp({
     apiKey: "AIzaSyBrZavfVmhrLOCLZAtkeTaNWy4QKbNBORA",
@@ -11,5 +12,8 @@ const app = initializeApp({
 });
 const db = getFirestore();
 export const camisetasCollection = collection(db, 'camisetas');
+export const profilesCollection = collection(db, 'profiles');
+export const carrinhosCollection = collection(db, 'carrinhos');
+export const auth = getAuth();
 
-export default { app, db, camisetasCollection }
+export default { app, db, auth, camisetasCollection }
