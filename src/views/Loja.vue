@@ -21,7 +21,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="green" @click.stop.prevent="addToCart(camiseta.id)" dark>
+        <v-btn color="green" @click.stop.prevent="add2cart(camiseta)" dark>
           COMPRAR
           <v-icon right>mdi-cart-plus</v-icon>
         </v-btn>
@@ -50,7 +50,7 @@
           <v-btn
             color="red darken-1"
             text
-            @click="dialogAdicionado = false"
+            @click.stop.prevent="dialogAdicionado = false"
           >
             FECHAR
           </v-btn>
@@ -58,7 +58,7 @@
             dense
             color="green darken-1"
             text
-            @click="dialogAdicionado = false"
+            @click.stop.prevent="dialogAdicionado = false"
             :to="{ name: 'Carrinho' }"
           >
             IR AO CARRINHO
@@ -85,7 +85,7 @@
           <v-btn
             color="red darken-1"
             text
-            @click="dialogNoUser = !dialogNoUser"
+            @click.stop.prevent="dialogNoUser = false"
           >
             FECHAR
           </v-btn>
@@ -93,7 +93,7 @@
             dense
             color="green darken-1"
             text
-            @click="dialogAdicionado = !dialogNoUser"
+            @click.stop.prevent="dialogNoUser = false"
             :to="{ name: 'Login' }"
           >
             CRIAR USUÁRIO
@@ -106,7 +106,8 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import { auth } from '../plugins/firebase.js';
+import { auth, db } from '../plugins/firebase.js';
+import { doc } from 'firebase/firestore';
 
 export default {
 
@@ -118,7 +119,6 @@ export default {
     }
   },
 
-
   computed: {
     ...mapState({
     camisetasFiltradas: state => state.camisetasFiltradas,
@@ -126,18 +126,32 @@ export default {
   }),
   },
 
-
   methods: {
-    ...mapActions(['addCart']),
-    addToCart(id) {
+
+    ...mapActions([]),
+
+    async add2cart(camiseta) {
       const user = auth.currentUser;
       if (user) {
-        this.addCart(id);
+        const uid = user.uid;
         this.callDialogAdicionado();
+        let novaCamiseta = {};
+        Object.assign(novaCamiseta, camiseta);
+        novaCamiseta.quantidade = 1;
+        this.addCamiseta2Cart(novaCamiseta);
+        console.log('ignore -', uid)
       } else {
         this.dialogNoUser = true;
       }
     },
+
+    async addCamiseta2Cart(novaCamiseta) {
+      const uid = auth.currentUser.uid;
+      const carrinho = doc(db, 'carrinhos', uid);
+      console.log(carrinho);
+      console.log(novaCamiseta)
+    },
+
     callDialogAdicionado() {
       this.dialogAdicionado = true;
       setTimeout(() => this.dialogAdicionado = false, 2500)
