@@ -55,9 +55,11 @@ export default {
   },
 
   methods: {
+
     signOut() {
       signOut(auth);
     }
   }
+  
 };
 </script>

@@ -21,9 +21,9 @@
 </template>
 
 <script>
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from '@firebase/auth';
-import { addDoc } from '@firebase/firestore';
-import { auth, profilesCollection } from '../plugins/firebase.js';
+import { createUserWithEmailAndPassword } from '@firebase/auth';
+import { setDoc, doc } from '@firebase/firestore';
+import { auth, db } from '../plugins/firebase.js';
 
 export default {   
 
@@ -45,24 +45,25 @@ export default {
         
         async createUser() {
             await createUserWithEmailAndPassword(auth, this.user.email, this.user.senha);
-            this.$store.dispatch('saveUID')
-            this.saveProfileData();
+            this.createProfileAndCartDoc();
             this.$router.push({ name: 'Loja' });
         },
-        login() {
-            signInWithEmailAndPassword(auth, this.user.email, this.user.senha);
-            this.$router.push({ name: 'Loja' });
-        },
-        async saveProfileData() {
+
+        async createProfileAndCartDoc() {
             const uid = auth.currentUser.uid;
-            await addDoc(profilesCollection, {
-                owner: uid,
+            const profile = {
+                email: this.user.email,
                 nome: this.nome,
                 sobrenome: this.sobrenome,
-                endereco: this.endereco,
                 cpf: this.cpf,
                 tel: this.tel,
-            })
+                endereco: this.endereco,
+            };
+            const carrinho = {
+                camisetas: []
+            };
+            await setDoc(doc(db, 'profiles', uid), profile);
+            await setDoc(doc(db, 'carrinhos', uid), carrinho);
         }
     }
 

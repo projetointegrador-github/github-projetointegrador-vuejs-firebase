@@ -25,12 +25,12 @@
                 Preço: R$ {{ camiseta.preço }},00
               </div>
               <div class="btnAdicionarDiminuir">
-                <v-btn small @click.stop.prevent="addShirt(camiseta.id)"
+                <v-btn small @click.stop.prevent="add2cart(camiseta.id)"
                   ><v-icon>mdi-plus</v-icon></v-btn
                 >
                 <v-btn
                   small
-                  @click.stop.prevent="DiminuirQuantidade(camiseta.id)"
+                  @click.stop.prevent="diminuirQuantidade()"
                   ><v-icon>mdi-minus</v-icon></v-btn
                 >
               </div>
@@ -62,27 +62,18 @@
 </template>
 
 <script>
-import { mapState, mapActions } from "vuex";
-
+import { mapState } from "vuex";
+// import { db, auth } from '../plugins/firebase.js';
+ 
 export default {
+
   computed: {
-    // ...mapState({
-    //   camisetasCarrinho: state => state.camisetasCarrinho
-    // }),
     ...mapState(["carrinho"]),
   },
 
   methods: {
-    ...mapActions(["addCart"]),
-    addShirt(id) {
-      this.addCart(id);
-      this.$forceUpdate();
-    },
-    DiminuirQuantidade(id) {
-      this.$store.dispatch("DiminuirQuantidade", id);
-      this.$forceUpdate();
-    },
   },
+
 };
 </script>
 
