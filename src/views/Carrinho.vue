@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { mapState } from "vuex";
+import { mapState, mapActions } from "vuex";
 // import { db, auth } from '../plugins/firebase.js';
  
 export default {
@@ -71,8 +71,13 @@ export default {
     ...mapState(["carrinho"]),
   },
 
-  methods: {
+  mounted() {
+    this.getCarrinho();
   },
+
+  methods: {
+    ...mapActions(['getCarrinho'])
+  }
 
 };
 </script>

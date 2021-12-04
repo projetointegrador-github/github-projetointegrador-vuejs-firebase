@@ -107,7 +107,7 @@
 <script>
 import { mapState, mapActions } from 'vuex'
 import { auth, db } from '../plugins/firebase.js';
-import { doc } from 'firebase/firestore';
+import { doc, getDoc, updateDoc } from 'firebase/firestore';
 
 export default {
 
@@ -119,6 +119,11 @@ export default {
     }
   },
 
+  mounted() {
+    const uid = auth.currentUser.uid;
+    console.log(uid)
+  },
+
   computed: {
     ...mapState({
     camisetasFiltradas: state => state.camisetasFiltradas,
@@ -128,34 +133,43 @@ export default {
 
   methods: {
 
-    ...mapActions([]),
+    ...mapActions(['getCarrinho']),
 
     async add2cart(camiseta) {
       const user = auth.currentUser;
       if (user) {
-        const uid = user.uid;
         this.callDialogAdicionado();
         let novaCamiseta = {};
         Object.assign(novaCamiseta, camiseta);
         novaCamiseta.quantidade = 1;
-        this.addCamiseta2Cart(novaCamiseta);
-        console.log('ignore -', uid)
+        this.addCamiseta2cart(novaCamiseta);
       } else {
         this.dialogNoUser = true;
       }
     },
 
-    async addCamiseta2Cart(novaCamiseta) {
+    async addCamiseta2cart(novaCamiseta) {
       const uid = auth.currentUser.uid;
-      const carrinho = doc(db, 'carrinhos', uid);
-      console.log(carrinho);
-      console.log(novaCamiseta)
+      let camisetas = [];
+      const docCamisetas = await getDoc(doc(db, 'carrinhos', uid));
+      camisetas = docCamisetas.data().camisetas;
+
+      const camisetaExiste = camisetas.find(camiseta => camiseta.id === novaCamiseta.id);
+
+      if (camisetaExiste) {
+        console.log('quantidade += 1')
+      } else {
+        camisetas.push(novaCamiseta);
+        await updateDoc(doc(db, 'carrinhos', uid), {camisetas});
+      }
+      this.getCarrinho();
     },
 
     callDialogAdicionado() {
       this.dialogAdicionado = true;
       setTimeout(() => this.dialogAdicionado = false, 2500)
-    }
+    },
+
   }
 
 };

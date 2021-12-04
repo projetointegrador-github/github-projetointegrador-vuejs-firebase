@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import { camisetasCollection, db } from '../plugins/firebase.js';
+import { camisetasCollection, db, auth } from '../plugins/firebase.js';
 import { getDocs, doc, getDoc } from '@firebase/firestore';
 
 Vue.use(Vuex)
@@ -46,12 +46,8 @@ export default new Vuex.Store({
       state.user.profile = doc;
     },
 
-    PUSH_CAMISETAS_CARRINHO(state, docCamisetaCarrinho) {
-      state.carrinho.camisetas.push(docCamisetaCarrinho);
-    },
-
-    log() {
-      console.log('log!');
+    SAVE_CARRINHO(state, camisetasCarrinho) {
+      state.carrinho.camisetas = camisetasCarrinho;
     }
 
   },
@@ -77,6 +73,13 @@ export default new Vuex.Store({
       const docProfile = await getDoc(docRef);
       commit('SAVE_PROFILE', docProfile.data());
     },
+
+    async getCarrinho({commit}) {
+      const uid = auth.currentUser.uid;
+      const docRef = await getDoc(doc(db, 'carrinhos', uid));
+      const camisetasCarrinho = docRef.data().camisetas;
+      commit('SAVE_CARRINHO', camisetasCarrinho);
+    }
 
   },
   modules: {
