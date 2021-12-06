@@ -31,6 +31,10 @@ const routes = [
     name: 'Blank',
     component: () => import('../layout/Blank.vue'),
     children: [{
+      path: '/signup',
+      name: 'Signup',
+      component: () => import('../views/Signup.vue')
+    }, {
       path: '/login',
       name: 'Login',
       component: () => import('../views/Login.vue')

@@ -63,6 +63,7 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
+import { auth } from "../plugins/firebase.js";
 // import { db, auth } from '../plugins/firebase.js';
  
 export default {
@@ -71,8 +72,14 @@ export default {
     ...mapState(["carrinho"]),
   },
 
-  mounted() {
-    this.getCarrinho();
+  created() {
+    const user = auth.currentUser;
+    if (user) {
+      this.getCarrinho();
+    } else {
+      window.alert('Você precisa estar logado para acessar o carrinho!');
+      this.$router.push({ name: 'Loja'});
+    }
   },
 
   methods: {

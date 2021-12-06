@@ -56,8 +56,9 @@ export default {
 
   methods: {
 
-    signOut() {
-      signOut(auth);
+    async signOut() {
+      await signOut(auth);
+      window.alert('Deslogado com sucesso!');
     }
   }
   

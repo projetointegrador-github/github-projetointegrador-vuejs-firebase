@@ -96,6 +96,15 @@
             @click.stop.prevent="dialogNoUser = false"
             :to="{ name: 'Login' }"
           >
+            LOGIN
+          </v-btn>
+          <v-btn
+            dense
+            color="green darken-1"
+            text
+            @click.stop.prevent="dialogNoUser = false"
+            :to="{ name: 'Signup' }"
+          >
             CRIAR USUÁRIO
           </v-btn>
         </v-card-actions>
