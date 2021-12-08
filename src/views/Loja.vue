@@ -117,6 +117,7 @@
 import { mapState, mapActions } from 'vuex'
 import { auth, db } from '../plugins/firebase.js';
 import { doc, getDoc, updateDoc } from 'firebase/firestore';
+import { bus } from '../main.js';
 
 export default {
 
@@ -128,11 +129,6 @@ export default {
     }
   },
 
-  mounted() {
-    const uid = auth.currentUser.uid;
-    console.log(uid)
-  },
-
   computed: {
     ...mapState({
     camisetasFiltradas: state => state.camisetasFiltradas,
@@ -140,9 +136,15 @@ export default {
   }),
   },
 
+  created(){
+    bus.$on('aumentarQuantidade', (camiseta) => {
+      this.addCamiseta2cart(camiseta);
+    })
+  },
+
   methods: {
 
-    ...mapActions(['getCarrinho']),
+    ...mapActions(['getCarrinho', 'calcValorTotal']),
 
     async add2cart(camiseta) {
       const user = auth.currentUser;
@@ -166,7 +168,10 @@ export default {
       const camisetaExiste = camisetas.find(camiseta => camiseta.id === novaCamiseta.id);
 
       if (camisetaExiste) {
-        console.log('quantidade += 1')
+        if (camisetaExiste.quantidade > 0) {
+          camisetaExiste.quantidade += 1;
+        await updateDoc(doc(db, 'carrinhos', uid), {camisetas});
+        }
       } else {
         camisetas.push(novaCamiseta);
         await updateDoc(doc(db, 'carrinhos', uid), {camisetas});

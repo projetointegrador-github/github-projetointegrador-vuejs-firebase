@@ -25,7 +25,7 @@
                 Preço: R$ {{ camiseta.preço }},00
               </div>
               <div class="btnAdicionarDiminuir">
-                <v-btn small @click.stop.prevent="add2cart(camiseta.id)"
+                <v-btn small @click.stop.prevent="aumentarQuantidade(camiseta)"
                   ><v-icon>mdi-plus</v-icon></v-btn
                 >
                 <v-btn
@@ -50,7 +50,7 @@
             </v-container>
           </v-row>
           <v-row class="btnResumo">
-            <v-btn color="green" class="btnComprar" dark large>
+            <v-btn color="green" class="btnComprar" dark large @click.stop.prevent="confirmarCompra()">
               Confirmar compra
               <v-icon right>mdi-check-bold</v-icon>
             </v-btn>
@@ -64,12 +64,13 @@
 <script>
 import { mapState, mapActions } from "vuex";
 import { auth } from "../plugins/firebase.js";
+import { bus } from "../main.js";
 // import { db, auth } from '../plugins/firebase.js';
  
 export default {
 
   computed: {
-    ...mapState(["carrinho"]),
+    ...mapState(["carrinho", "user"]),
   },
 
   created() {
@@ -83,7 +84,21 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getCarrinho'])
+    ...mapActions(['getCarrinho', 'getProfile']),
+
+    aumentarQuantidade(camiseta) {
+      bus.$emit('aumentarQuantidade', camiseta)
+    },
+
+    confirmarCompra() {
+      const uid = auth.currentUser.uid;
+      this.getProfile(uid);
+      if (this.user.profile.status == 'sem-perfil') {
+        window.alert('Vá ao perfil e cadastre um endereco antes de confirmar uma compra.');
+      } else {
+        window.alert('Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco);
+      }
+    }
   }
 
 };

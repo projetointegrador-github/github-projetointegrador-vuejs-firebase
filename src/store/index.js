@@ -30,6 +30,10 @@ export default new Vuex.Store({
       state.camisetasFiltradas = state.camisetas;
     },
 
+    CALC_VALOR_TOTAL(state, valorTotal) {
+      state.carrinho.valorTotal = valorTotal;
+    },
+
     PUSH_CAMISETAS(state, docCamiseta) {
       state.camisetas.push(docCamiseta);
     },
@@ -79,6 +83,12 @@ export default new Vuex.Store({
       const docRef = await getDoc(doc(db, 'carrinhos', uid));
       const camisetasCarrinho = docRef.data().camisetas;
       commit('SAVE_CARRINHO', camisetasCarrinho);
+
+      let preço = 0;
+      camisetasCarrinho.forEach((camiseta) => {
+        preço += camiseta.preço * camiseta.quantidade;
+        commit('CALC_VALOR_TOTAL', preço);
+      })
     }
 
   },
