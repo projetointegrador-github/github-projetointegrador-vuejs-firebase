@@ -73,7 +73,7 @@ export default {
     ...mapState(["carrinho", "user"]),
   },
 
-  created() {
+  mounted() {
     const user = auth.currentUser;
     if (user) {
       this.getCarrinho();
@@ -103,5 +103,3 @@ export default {
 
 };
 </script>
-
-<style></style>
