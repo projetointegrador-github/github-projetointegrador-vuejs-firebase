@@ -78,7 +78,13 @@ export default {
     if (user) {
       this.getCarrinho();
     } else {
-      window.alert('Você precisa estar logado para acessar o carrinho!');
+      this.$swal({
+          title: 'Você precisa estar logado para acessar o carrinho',
+          icon: 'info',
+          iconColor: 'red',
+          showConfirmButton: true,
+          confirmButtonColor: 'green'
+      });
       this.$router.push({ name: 'Loja'});
     }
   },
@@ -94,9 +100,19 @@ export default {
       const uid = auth.currentUser.uid;
       this.getProfile(uid);
       if (this.user.profile.status == 'sem-perfil') {
-        window.alert('Vá ao perfil e cadastre um endereco antes de confirmar uma compra.');
+        this.$swal({
+          title: 'Vá ao perfil e cadastre um endereco antes de confirmar uma compra.',
+          icon: 'success',
+          showConfirmButton: true,
+          confirmButtonColor: 'green'
+        });
       } else {
-        window.alert('Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco);
+        this.$swal({
+          title: 'Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco,
+          icon: 'success',
+          showConfirmButton: true,
+          confirmButtonColor: 'green'
+        });
       }
     }
   }

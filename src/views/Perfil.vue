@@ -69,7 +69,13 @@ export default {
             const uid = user.uid;
             this.getProfile(uid);
         } else {
-            window.alert('Você precisa cadastrar um usuário para acessar o perfil');
+            this.$swal({
+                title: 'Você precisa cadastrar um usuário para acessar o perfil',
+                icon: 'info',
+                iconColor: 'red',
+                showConfirmButton: true,
+                confirmButtonColor: 'green'
+            });
             this.$router.push({name: 'Loja'});
         }
     }

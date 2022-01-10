@@ -58,7 +58,12 @@ export default {
 
     async signOut() {
       await signOut(auth);
-      window.alert('Deslogado com sucesso!');
+      this.$swal({
+        title: 'Deslogado com sucesso!',
+        icon: 'success',
+        showConfirmButton: true,
+        confirmButtonColor: 'green'
+      });
     }
   }
   
