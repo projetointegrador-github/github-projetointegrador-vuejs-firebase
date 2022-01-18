@@ -14,7 +14,7 @@
             >
               <div class="imgProduto">
                 <img
-                  src="../assets/camiseta1.png"
+                  :src="require(`../assets/${camiseta.url}Carrinho.png`)"
                   alt="Camiseta"
                   class="imgCamisetaProduto"
                 />

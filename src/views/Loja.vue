@@ -6,9 +6,16 @@
       v-for="(camiseta, index) of camisetasFiltradas"
       :key="index"
     >
-      <v-img class="white--text align-end" height="200px">
+      <v-img v-if="camiseta.url" class="white--text align-end" height="200px">
         <img
-          src="../assets/camiseta3.png"
+          :src="require(`../assets/${camiseta.url}.png`)"
+          alt="Dale"
+        />
+      </v-img>
+
+      <v-img v-else class="white--text align-end" height="200px">
+        <img
+          src="../assets/semimagem.png"
           alt="Dale"
         />
       </v-img>
