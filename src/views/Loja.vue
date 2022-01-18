@@ -7,17 +7,11 @@
       :key="index"
     >
       <v-img v-if="camiseta.url" class="white--text align-end" height="200px">
-        <img
-          :src="require(`../assets/${camiseta.url}.png`)"
-          alt="Dale"
-        />
+        <img :src="require(`../assets/${camiseta.url}.png`)" alt="Dale" />
       </v-img>
 
       <v-img v-else class="white--text align-end" height="200px">
-        <img
-          src="../assets/semimagem.png"
-          alt="Dale"
-        />
+        <img src="../assets/semimagem.png" alt="Dale" />
       </v-img>
 
       <v-card-subtitle class="pb-0">R$ {{ camiseta.preço }},00</v-card-subtitle>
@@ -38,18 +32,13 @@
         </v-btn> -->
       </v-card-actions>
     </v-card>
-    <v-dialog
-      v-model="dialogAdicionado"
-      max-width="500"
-    >
+    <v-dialog v-model="dialogAdicionado" max-width="500">
       <v-card>
         <v-card-title class="text-h5">
           PRODUTO ADICIONADO AO CARRINHO
         </v-card-title>
 
-        <v-card-text>
-          Vá ao carrinho para ver seus produtos.
-        </v-card-text>
+        <v-card-text> Vá ao carrinho para ver seus produtos. </v-card-text>
 
         <v-card-actions>
           <v-spacer></v-spacer>
@@ -73,10 +62,7 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-    <v-dialog
-      v-model="dialogNoUser"
-      max-width="700"
-    >
+    <v-dialog v-model="dialogNoUser" max-width="700">
       <v-card>
         <v-card-title class="text-h5">
           VOCÊ AINDA NÃO TEM UM USUÁRIO CRIADO
@@ -121,37 +107,54 @@
 </template>
 
 <script>
-import { mapState, mapActions } from 'vuex'
-import { auth, db } from '../plugins/firebase.js';
-import { doc, getDoc, updateDoc } from 'firebase/firestore';
-import { bus } from '../main.js';
+import { mapState, mapActions } from "vuex";
+import { auth, db } from "../plugins/firebase.js";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { bus } from "../main.js";
 
 export default {
-
   data() {
     return {
       dialogAdicionado: false,
       dialogCart: false,
       dialogNoUser: false,
-    }
+    };
   },
 
   computed: {
     ...mapState({
-    camisetasFiltradas: state => state.camisetasFiltradas,
-    camisetasCarrinho: state => state.camisetasCarrinho
-  }),
+      camisetasFiltradas: (state) => state.camisetasFiltradas,
+      camisetasCarrinho: (state) => state.camisetasCarrinho,
+    }),
   },
 
-  created(){
-    bus.$on('aumentarQuantidade', (camiseta) => {
+  created() {
+    bus.$on("aumentarQuantidade", (camiseta) => {
       this.addCamiseta2cart(camiseta);
-    })
+    });
+    bus.$on("diminuirQuantidade", (camiseta) => {
+      this.diminuirQuantidade(camiseta);
+    });
   },
 
   methods: {
+    ...mapActions(["getCarrinho", "calcValorTotal"]),
 
-    ...mapActions(['getCarrinho', 'calcValorTotal']),
+
+    async diminuirQuantidade(idCamiseta) {
+      const uid = auth.currentUser.uid;
+      let docCamisetas = await getDoc(doc(db, "carrinhos", uid))
+      let camisetas = docCamisetas.data().camisetas;
+      let camiseta = camisetas.find( shirt => shirt.id == idCamiseta );
+
+      if (camiseta.quantidade == 1) {
+        camisetas.splice(camisetas.indexOf(camiseta), 1)
+      } else {
+        camiseta.quantidade -= 1;
+      }
+
+      await updateDoc(doc(db, "carrinhos", uid), { camisetas });
+    },
 
     async add2cart(camiseta) {
       const user = auth.currentUser;
@@ -169,32 +172,31 @@ export default {
     async addCamiseta2cart(novaCamiseta) {
       const uid = auth.currentUser.uid;
       let camisetas = [];
-      const docCamisetas = await getDoc(doc(db, 'carrinhos', uid));
+      const docCamisetas = await getDoc(doc(db, "carrinhos", uid));
       camisetas = docCamisetas.data().camisetas;
 
-      const camisetaExiste = camisetas.find(camiseta => camiseta.id === novaCamiseta.id);
+      const camisetaExiste = camisetas.find(
+        (camiseta) => camiseta.id === novaCamiseta.id
+      );
 
       if (camisetaExiste) {
         if (camisetaExiste.quantidade > 0) {
           camisetaExiste.quantidade += 1;
-        await updateDoc(doc(db, 'carrinhos', uid), {camisetas});
+          await updateDoc(doc(db, "carrinhos", uid), { camisetas });
         }
       } else {
         camisetas.push(novaCamiseta);
-        await updateDoc(doc(db, 'carrinhos', uid), {camisetas});
+        await updateDoc(doc(db, "carrinhos", uid), { camisetas });
       }
       this.getCarrinho();
     },
 
     callDialogAdicionado() {
       this.dialogAdicionado = true;
-      setTimeout(() => this.dialogAdicionado = false, 2500)
+      setTimeout(() => (this.dialogAdicionado = false), 2500);
     },
-
-  }
-
+  },
 };
 </script>
 
-<style>
-</style>
+<style></style>

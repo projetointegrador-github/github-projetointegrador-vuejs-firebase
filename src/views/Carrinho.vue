@@ -30,7 +30,7 @@
                 >
                 <v-btn
                   small
-                  @click.stop.prevent="diminuirQuantidade()"
+                  @click.stop.prevent="diminuirQuantidade(camiseta.id)"
                   ><v-icon>mdi-minus</v-icon></v-btn
                 >
               </div>
@@ -94,6 +94,12 @@ export default {
 
     aumentarQuantidade(camiseta) {
       bus.$emit('aumentarQuantidade', camiseta)
+    },
+
+    diminuirQuantidade(idCamiseta) {
+      bus.$emit('diminuirQuantidade', idCamiseta);
+      this.getCarrinho();
+      this.$forceUpdate();
     },
 
     confirmarCompra() {
