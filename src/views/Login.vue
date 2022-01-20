@@ -30,7 +30,7 @@ export default {
     },
 
     methods: {
-        async Login() {
+        async Login() { // função que loga na firebase o usuário com as informações logadas e redireciona o usuário para a página principal (loja)
             await signInWithEmailAndPassword(auth, this.user.email, this.user.senha);
             this.$router.push({name: 'Loja'});
         }

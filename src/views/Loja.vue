@@ -22,7 +22,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="green" @click.stop.prevent="add2cart(camiseta)" dark>
+        <v-btn color="green" @click.stop.prevent="add2cart(camiseta)" dark> 
           COMPRAR
           <v-icon right>mdi-cart-plus</v-icon>
         </v-btn>
@@ -122,41 +122,23 @@ export default {
   },
 
   computed: {
-    ...mapState({
+    ...mapState({ // para facilitar o acesso, mapeia as variaveis do state da store do vuex
       camisetasFiltradas: (state) => state.camisetasFiltradas,
       camisetasCarrinho: (state) => state.camisetasCarrinho,
     }),
   },
 
-  created() {
+  created() { // dentro do ciclo de vida do componente, quando ele é criado adiciona uma escuta no emit adicionarQuantidade (está sendo chamado dentro do carrinho)
     bus.$on("aumentarQuantidade", (camiseta) => {
       this.addCamiseta2cart(camiseta);
-    });
-    bus.$on("diminuirQuantidade", (camiseta) => {
-      this.diminuirQuantidade(camiseta);
     });
   },
 
   methods: {
     ...mapActions(["getCarrinho", "calcValorTotal"]),
 
-
-    async diminuirQuantidade(idCamiseta) {
-      const uid = auth.currentUser.uid;
-      let docCamisetas = await getDoc(doc(db, "carrinhos", uid))
-      let camisetas = docCamisetas.data().camisetas;
-      let camiseta = camisetas.find( shirt => shirt.id == idCamiseta );
-
-      if (camiseta.quantidade == 1) {
-        camisetas.splice(camisetas.indexOf(camiseta), 1)
-      } else {
-        camiseta.quantidade -= 1;
-      }
-
-      await updateDoc(doc(db, "carrinhos", uid), { camisetas });
-    },
-
     async add2cart(camiseta) {
+      //  Função que adiciona uma camiseta dentro do carrinho.  É chamada quando clicado no botão comprar da camiseta mostrada na tela e passa a própria camiseta como parametro.
       const user = auth.currentUser;
       if (user) {
         this.callDialogAdicionado();
@@ -170,6 +152,7 @@ export default {
     },
 
     async addCamiseta2cart(novaCamiseta) {
+      // Função que recebe uma camiseta e adiciona, adiciona ela em um array de camisetas já filtradas da firebase e atualiza o doc da camiseta dentro da firebase com esse array.
       const uid = auth.currentUser.uid;
       let camisetas = [];
       const docCamisetas = await getDoc(doc(db, "carrinhos", uid));
@@ -179,12 +162,12 @@ export default {
         (camiseta) => camiseta.id === novaCamiseta.id
       );
 
-      if (camisetaExiste) {
+      if (camisetaExiste) { // Se a camiseta que foi filtrada já existe, ele só aumenta o atributo 'quantidade' dentro da camiseta em +1 e atualiza o docs,
         if (camisetaExiste.quantidade > 0) {
           camisetaExiste.quantidade += 1;
           await updateDoc(doc(db, "carrinhos", uid), { camisetas });
         }
-      } else {
+      } else { // se não, ele dá o push da camiseta, pois ela ainda não existe e depois atualiza o docs na firebase
         camisetas.push(novaCamiseta);
         await updateDoc(doc(db, "carrinhos", uid), { camisetas });
       }
@@ -192,6 +175,9 @@ export default {
     },
 
     callDialogAdicionado() {
+
+      //  chamada quando a camiseta é adicionada ao carrinho. Função timeout que deixa uma propriedade que está associada a um dialog como true por 2 segundos e meio.
+
       this.dialogAdicionado = true;
       setTimeout(() => (this.dialogAdicionado = false), 2500);
     },

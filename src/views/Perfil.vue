@@ -39,7 +39,7 @@ export default {
             user: state => state.user
         }),
 
-        nomeCompleto() {
+        nomeCompleto() { // computed que retona o nome completo
             return this.user.profile.nome + ' ' + this.user.profile.sobrenome
         }
 
@@ -47,12 +47,12 @@ export default {
 
     methods: {
 
-        ...mapActions(['getProfile']),
+        ...mapActions(['getProfile']), // para um melhor acesso, mapeia as actions do vueX dentro do componente para ser acessado com this.NomeDaAction
 
-        async saveEndereco() {
+        async saveEndereco() { // função chamada quando em salvar dentro do formulário de perfil
             const uid = auth.currentUser.uid;
             const docReft = doc(db, 'profiles', uid);
-            await updateDoc(docReft, {
+            await updateDoc(docReft, { // atualiza o firebase com novos atributos de endereço e agora o usuário já pode confimar a compra dentro do carrinho sem ser barrado
                 status: 'tem-endereco',
                 endereco: this.endereco,
                 cep: this.cep
@@ -63,12 +63,12 @@ export default {
 
     },
 
-    mounted() {
+    mounted() { // demtro do clico de vida do componente, quando ele é montado verifica se existe usuário
         const user = auth.currentUser;
-        if (user) {
+        if (user) { // se exite, deixa o usuário entrar no componente e chama a função getprofile dentro do vuex
             const uid = user.uid;
             this.getProfile(uid);
-        } else {
+        } else { // se não existe, exibe um alert pedindo para que logue antes de tentar acssar o componente e direciona para a página principal novamente (loja), nunca deixando ele acessar o perfil antes de logar
             this.$swal({
                 title: 'Você precisa cadastrar um usuário para acessar o perfil',
                 icon: 'info',

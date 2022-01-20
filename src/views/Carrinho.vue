@@ -63,7 +63,8 @@
 
 <script>
 import { mapState, mapActions } from "vuex";
-import { auth } from "../plugins/firebase.js";
+import { auth, db } from "../plugins/firebase.js";
+import { doc, updateDoc, getDoc} from '@firebase/firestore'
 import { bus } from "../main.js";
 // import { db, auth } from '../plugins/firebase.js';
  
@@ -74,10 +75,11 @@ export default {
   },
 
   mounted() {
+    // dentro do cliclo de vida do componente, quando ele é criado verifica se existe um usuário logado
     const user = auth.currentUser;
-    if (user) {
+    if (user) { // se existe o usuário, deixa o acesso ao componente e chama o getCarrinho
       this.getCarrinho();
-    } else {
+    } else { // se não existe, apresenta um alert de que o usuário não pode acessar, pois precisa estar logado e, redireciona o usuário para a página da loja (nunca deixando o usuário acessar o componente)
       this.$swal({
           title: 'Você precisa estar logado para acessar o carrinho',
           icon: 'info',
@@ -90,22 +92,38 @@ export default {
   },
 
   methods: {
-    ...mapActions(['getCarrinho', 'getProfile']),
+    ...mapActions(['getCarrinho', 'getProfile']), // para facilitar o acesso as actions do vueX, mapeia tais no componente para poderem ser acessar somente com this.NomeDaAction
 
     aumentarQuantidade(camiseta) {
-      bus.$emit('aumentarQuantidade', camiseta)
+      // chamado quando se clica no ícone de "+" dentro da camiseta do carrinho
+      bus.$emit('aumentarQuantidade', camiseta) // emite um um evento que vai ser escuta dentro da loja, que a função addCamiseta2Cart() para incrementar o atributo quantidade da camiseta e atualizar na firebase
     },
 
-    diminuirQuantidade(idCamiseta) {
-      bus.$emit('diminuirQuantidade', idCamiseta);
+    async diminuirQuantidade(idCamiseta) {
+      // Função chamada quando se clica no ícone de "-" dentro da camiseta do carrinho. Diminuir 1 do atributo quantidade da camiseta e atualiza a firebase.
+
+      const uid = auth.currentUser.uid;
+      let docCamisetas = await getDoc(doc(db, "carrinhos", uid))
+      let camisetas = docCamisetas.data().camisetas;
+      let camiseta = camisetas.find( shirt => shirt.id == idCamiseta );
+      
+      if (camiseta.quantidade == 1) {
+        camisetas.splice(camisetas.indexOf(camiseta), 1)
+      } else {
+        camiseta.quantidade -= 1;
+      }
+
+      await updateDoc(doc(db, "carrinhos", uid), { camisetas });
+
       this.getCarrinho();
       this.$forceUpdate();
     },
 
     confirmarCompra() {
+      // Função que exibe um alert na tela quando se clica no botão de confirmar compra
       const uid = auth.currentUser.uid;
       this.getProfile(uid);
-      if (this.user.profile.status == 'sem-perfil') {
+      if (this.user.profile.status == 'sem-perfil') { // se o usuário ainda não tiver logado um endereço, exibe um alerta pedindo para que ele logue isso dentro do perfil
         this.$swal({
           title: 'Vá ao perfil e cadastre um endereco antes de confirmar uma compra.',
           icon: 'success',
@@ -113,7 +131,7 @@ export default {
           confirmButtonColor: 'green'
         });
       } else {
-        this.$swal({
+        this.$swal({ // se o usuário já tiver logado um endereço do perfil, exibe 1 alert de sucesso com o endereço de entrega e o preço do pedido
           title: 'Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco,
           icon: 'success',
           showConfirmButton: true,
