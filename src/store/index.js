@@ -51,6 +51,9 @@ export default new Vuex.Store({
     },
 
     SAVE_CARRINHO(state, camisetasCarrinho) {
+      if (camisetasCarrinho.length === 0) {
+        state.carrinho.valorTotal = 0;
+      }
       state.carrinho.camisetas = camisetasCarrinho;
     }
 
