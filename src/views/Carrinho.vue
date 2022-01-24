@@ -123,19 +123,28 @@ export default {
       // Função que exibe um alert na tela quando se clica no botão de confirmar compra
       const uid = auth.currentUser.uid;
       this.getProfile(uid);
-      if (this.user.profile.status == 'sem-perfil') { // se o usuário ainda não tiver logado um endereço, exibe um alerta pedindo para que ele logue isso dentro do perfil
-        this.$swal({
-          title: 'Vá ao perfil e cadastre um endereco antes de confirmar uma compra.',
-          icon: 'success',
-          showConfirmButton: true,
-          confirmButtonColor: 'green'
-        });
+      if (this.user.profile.status) {
+        if (this.user.profile.status == 'sem-perfil') { // se o usuário ainda não tiver logado um endereço, exibe um alerta pedindo para que ele logue isso dentro do perfil
+          this.$swal({
+            title: 'Vá ao perfil e cadastre um endereco antes de confirmar uma compra.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: 'green'
+          });
+        } else {
+          this.$swal({ // se o usuário já tiver logado um endereço do perfil, exibe 1 alert de sucesso com o endereço de entrega e o preço do pedido
+            title: 'Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco,
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: 'green'
+          });
+        }
       } else {
-        this.$swal({ // se o usuário já tiver logado um endereço do perfil, exibe 1 alert de sucesso com o endereço de entrega e o preço do pedido
-          title: 'Compra confirmada de valor R$ ' + this.carrinho.valorTotal + ',00 para o endereço: ' + this.user.profile.endereco,
-          icon: 'success',
-          showConfirmButton: true,
-          confirmButtonColor: 'green'
+        this.$swal({
+            title: 'Vá ao perfil e cadastre um endereco antes de confirmar uma compra.',
+            icon: 'success',
+            showConfirmButton: true,
+            confirmButtonColor: 'green'
         });
       }
     }

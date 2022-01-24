@@ -22,7 +22,7 @@
       </v-card-text>
 
       <v-card-actions>
-        <v-btn color="green" @click.stop.prevent="add2cart(camiseta)" dark> 
+        <v-btn color="green" @click.stop.prevent="add2cart(camiseta)" dark>
           COMPRAR
           <v-icon right>mdi-cart-plus</v-icon>
         </v-btn>
@@ -122,13 +122,15 @@ export default {
   },
 
   computed: {
-    ...mapState({ // para facilitar o acesso, mapeia as variaveis do state da store do vuex
+    ...mapState({
+      // para facilitar o acesso, mapeia as variaveis do state da store do vuex
       camisetasFiltradas: (state) => state.camisetasFiltradas,
       camisetasCarrinho: (state) => state.camisetasCarrinho,
     }),
   },
 
-  created() { // dentro do ciclo de vida do componente, quando ele é criado adiciona uma escuta no emit adicionarQuantidade (está sendo chamado dentro do carrinho)
+  created() {
+    // dentro do ciclo de vida do componente, quando ele é criado adiciona uma escuta no emit adicionarQuantidade (está sendo chamado dentro do carrinho)
     bus.$on("aumentarQuantidade", (camiseta) => {
       this.addCamiseta2cart(camiseta);
     });
@@ -162,12 +164,14 @@ export default {
         (camiseta) => camiseta.id === novaCamiseta.id
       );
 
-      if (camisetaExiste) { // Se a camiseta que foi filtrada já existe, ele só aumenta o atributo 'quantidade' dentro da camiseta em +1 e atualiza o docs,
+      if (camisetaExiste) {
+        // Se a camiseta que foi filtrada já existe, ele só aumenta o atributo 'quantidade' dentro da camiseta em +1 e atualiza o docs,
         if (camisetaExiste.quantidade > 0) {
           camisetaExiste.quantidade += 1;
           await updateDoc(doc(db, "carrinhos", uid), { camisetas });
         }
-      } else { // se não, ele dá o push da camiseta, pois ela ainda não existe e depois atualiza o docs na firebase
+      } else {
+        // se não, ele dá o push da camiseta, pois ela ainda não existe e depois atualiza o docs na firebase
         camisetas.push(novaCamiseta);
         await updateDoc(doc(db, "carrinhos", uid), { camisetas });
       }
@@ -175,7 +179,6 @@ export default {
     },
 
     callDialogAdicionado() {
-
       //  chamada quando a camiseta é adicionada ao carrinho. Função timeout que deixa uma propriedade que está associada a um dialog como true por 2 segundos e meio.
 
       this.dialogAdicionado = true;
